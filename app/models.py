@@ -12,10 +12,10 @@ class Jugador(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(200))
     apellido = db.Column(db.String(200))
-    dinero = db.Column(db.Numeric(10,2), default=15000.00) 
+    dinero = db.Column(db.Float(precision=10, asdecimal=True, decimal_return_scale=2), default=15000.00) 
     activo = db.Column(db.Boolean, default=True)
-    fecha_creacion = db.Column(db.DataTime, index=True, default=datetime.utcnow)
-    apuesta = db.relationship('Apuesta', backref='jugador', lazy=True)
+    fecha_creacion = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    apuesta = db.relationship('Apuesta', backref='persona', lazy='dynamic')
 
     def __repr__(self):
         return '<Jugador %r>'%self.nombre
@@ -38,8 +38,8 @@ class Jugador(db.Model):
             dinero_apuesta = self.dinero
             self.dinero = self.dinero - dinero_apuesta
         elif (self.dinero > 1000):
-            dinero_apuesta = self.dinero * (porcentaje / 100)
-            self.dinero = self.dinero - dinero_apuesta
+            dinero_apuesta = float(self.dinero) * (porcentaje / 100)
+            self.dinero = float(self.dinero) - dinero_apuesta
         return dinero_apuesta
 
 
@@ -47,10 +47,10 @@ class Rueda(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     color = db.Column(db.Enum(Color))
     total_apuestas = db.Column(db.Integer)
-    total_pagado = db.Column(db.Numeric(10,2))
+    total_pagado = db.Column(db.Float(10,2))
     resultado_giro = db.Column(db.String(50))
-    fecha_creacion = db.Column(db.DataTime, index=True, default=datetime.utcnow)
-    apuesta = db.relationship('Apuesta', backref='rueda', lazy=True)
+    apuesta = db.relationship('Apuesta', backref='sorteo', lazy='dynamic')
+    fecha_creacion = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Rueda %r>' % self.resultado_giro
@@ -64,7 +64,6 @@ class Rueda(db.Model):
             color_sorteo = 'NEGRO'
         else:
             color_sorteo = 'VERDE'
-    
         self.resultado_giro = color_sorteo
 
 
@@ -72,9 +71,10 @@ class Apuesta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dinero = db.Column(db.Numeric(10,2))
     color = db.Column(db.String(20))
-    pago = db.Column(db.Numeric(10,2))
+    pago = db.Column(db.Float(10,2))
     jugador = db.Column(db.Integer, db.ForeignKey('jugador.id'), nullable= False)
     rueda = db.Column(db.Integer, db.ForeignKey('rueda.id'), nullable= False)
+    fecha_creacion = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):
         return '<Apuesta %r>' % self.color
