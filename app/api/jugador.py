@@ -14,7 +14,7 @@ def jugadores():
 def jugador_registro():
 	data = request.get_json() or {}
 	if('nombre' not in data and 'apellido' not in data):
-		return jsonify('Error')
+		return bad_request('Registrar nombre y apellido')
 	jugador = Jugador()
 	jugador.nombre = data['nombre']
 	jugador.apellido = data['apellido']
@@ -37,7 +37,7 @@ def jugador_editar(id):
 	jugador.dinero = data['dinero']
 	db.session.add(jugador)
 	db.session.commit()
-	
+
 	return jsonify(jugador.to_dict())
 
 @bp.route('/jugador/<id>', methods=['GET'])
