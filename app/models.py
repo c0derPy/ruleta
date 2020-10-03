@@ -20,6 +20,17 @@ class Jugador(db.Model):
     def __repr__(self):
         return '<Jugador %r>'%self.nombre
 
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'nombre': self.nombre,
+            'apellido': self.apellido,
+            'dinero': float(self.dinero),
+            'activo': self.activo,
+            'fecha_creacion': self.fecha_creacion
+        }
+        return data
+
     def seleccionar_color(self):
         resultado = random.randrange(1, 101, 1)
         color_seleccionado = ''
@@ -47,7 +58,7 @@ class Rueda(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     color = db.Column(db.Enum(Color))
     total_apuestas = db.Column(db.Integer)
-    total_pagado = db.Column(db.Float(10,2))
+    total_pagado = db.Column(db.Float(precision=10, asdecimal=True, decimal_return_scale=2))
     resultado_giro = db.Column(db.String(50))
     apuesta = db.relationship('Apuesta', backref='sorteo', lazy='dynamic')
     fecha_creacion = db.Column(db.DateTime, index=True, default=datetime.utcnow)
@@ -65,13 +76,14 @@ class Rueda(db.Model):
         else:
             color_sorteo = 'VERDE'
         self.resultado_giro = color_sorteo
+        return color_sorteo
 
 
 class Apuesta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dinero = db.Column(db.Numeric(10,2))
     color = db.Column(db.String(20))
-    pago = db.Column(db.Float(10,2))
+    pago = db.Column(db.Float(precision=10, asdecimal=True, decimal_return_scale=2))
     jugador = db.Column(db.Integer, db.ForeignKey('jugador.id'), nullable= False)
     rueda = db.Column(db.Integer, db.ForeignKey('rueda.id'), nullable= False)
     fecha_creacion = db.Column(db.DateTime, index=True, default=datetime.utcnow)
