@@ -5,6 +5,8 @@ from app.models import Jugador, Rueda, Apuesta
 
 @bp.route('/ruleta', methods=['GET'])
 def ruleta():
+    """ Genera la simulacion de la ruleta con todas las 
+    reglas planteadas y retorna los resultados de las apuestas """
     jugadores = Jugador.query.filter_by(activo=True)
     rueda = Rueda()
     color_giro = rueda.girar()
@@ -48,7 +50,7 @@ def ruleta():
     	db.session.commit()
 
     	total_apuestas = total_apuestas + 1
-    	total_pagado = total_pagado + dinero_ganado
+    	total_pagado = float(total_pagado) + float(dinero_ganado)
 
     rueda.total_apuestas = total_apuestas
     rueda.total_pagado = total_pagado    

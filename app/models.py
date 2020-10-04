@@ -9,6 +9,7 @@ class Color(Enum):
     NEGRO = 3
 
 class Jugador(db.Model):
+    """ Modelo Jugador """
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(200))
     apellido = db.Column(db.String(200))
@@ -21,6 +22,7 @@ class Jugador(db.Model):
         return '<Jugador %r>'%self.nombre
 
     def to_dict(self):
+        """ Retorna un diccionarion con la info del jugador """
         data = {
             'id': self.id,
             'nombre': self.nombre,
@@ -32,6 +34,7 @@ class Jugador(db.Model):
         return data
 
     def seleccionar_color(self):
+        """ Retorna el color asignado al jugador dinamicamente """
         resultado = random.randrange(1, 101, 1)
         color_seleccionado = ''
         if(resultado <= 49.5):
@@ -43,6 +46,7 @@ class Jugador(db.Model):
         return color_seleccionado
     
     def monto_apuesta(self):
+        """ Retorna el monto de apuesta asignado al jugador dinamicamente """
         porcentaje = random.randrange(11, 20, 1)
         dinero_apuesta = 0
         if(self.dinero > 0 and self.dinero <= 1000):
@@ -55,6 +59,7 @@ class Jugador(db.Model):
 
 
 class Rueda(db.Model):
+    """ Modelo Rueda """
     id = db.Column(db.Integer, primary_key=True)
     color = db.Column(db.Enum(Color))
     total_apuestas = db.Column(db.Integer)
@@ -67,6 +72,7 @@ class Rueda(db.Model):
         return '<Rueda %r>' % self.resultado_giro
 
     def girar(self):
+        """ Realiza el sorte de la ruleta y retorna el color ganador """
         resultado = random.randrange(1, 101, 1)
         color_sorteo = ''
         if(resultado <= 49.5):
@@ -80,6 +86,7 @@ class Rueda(db.Model):
 
 
 class Apuesta(db.Model):
+    """ Modelo Apusta """
     id = db.Column(db.Integer, primary_key=True)
     dinero = db.Column(db.Numeric(10,2))
     color = db.Column(db.String(20))
