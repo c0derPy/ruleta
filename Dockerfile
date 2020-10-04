@@ -4,16 +4,16 @@ RUN adduser -D ruleta
 
 WORKDIR /home/ruleta
 
-COPY ruleta/requirements.txt requirements.txt
+COPY requirements.txt requirements.txt
 RUN python -m venv venv
 RUN venv/bin/pip install -r requirements.txt
 RUN venv/bin/pip install gunicorn
 
-COPY ruleta/app app
-COPY ruleta/migrations migrations
-COPY ruleta/simulador.py ./
-COPY ruleta/config.py ./
-COPY ruleta/boot.sh ./
+COPY app app
+COPY migrations migrations
+COPY simulador.py ./
+COPY config.py ./
+COPY boot.sh ./
 RUN chmod +x boot.sh
 
 ENV FLASK_APP simulador.py
