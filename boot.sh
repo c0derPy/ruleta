@@ -8,4 +8,5 @@ while true; do
     echo Upgrade command failed, retrying in 5 secs...
     sleep 5
 done
-exec gunicorn -b :5000 --access-logfile - --error-logfile - simulador:app
+[[ -z "$(PORT)" ]] && port=5000 || port="$(PORT)"
+exec gunicorn -b :port --access-logfile - --error-logfile - simulador:app
