@@ -9,4 +9,4 @@ while true; do
     sleep 5
 done
 [[ -z "$(PORT)" ]] && port=5000 || port="$(PORT)"
-exec gunicorn -b :port --access-logfile - --error-logfile - simulador:app
+exec gunicorn --access-logfile - --error-logfile - simulador:app
